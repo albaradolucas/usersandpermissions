@@ -49,11 +49,11 @@ read -p "Ingrese la opción [de 1 a 5] o [S|s] para salir: " opcion
 
         case $opcion in
                 1) # add user
-                        new_user=$1
                         read -p "Ingresar el nombre del nuevo usuario: " new_user
 
                         if [ -z "$new_user" ]; then
                                 echo "Debe ingresar un nombre para generar un usuario."
+                                sleep 2
                                 continue
                         else
                                 sudo useradd "$new_user"
@@ -64,6 +64,38 @@ read -p "Ingrese la opción [de 1 a 5] o [S|s] para salir: " opcion
                                 echo "El usuario deberá ingresar una clave en su primer ingreso"
                                 sleep 2
 
+                        fi
+                        ;;
+                5) # del user
+                        read -p "Ingresar el nombre de usuario a eliminar: " del_user
+
+                        if [ -z "$del_user" ]; then
+                                echo "Debe ingresar un usuario para eliminar."
+                                sleep 2
+                                continue
+                        elif  id "$del_user" ; then
+                                sleep 2
+                                read -p "¿Está seguro que desea eliminar el usuario '"$del_user"' ? [y/n]" answer
+
+                                if [ "$answer" = "n" ] || [ "$answer" = "N" ] ; then
+                                        sleep 1
+                                        echo "No se realizó ninguna modificación en el usuario '$del_user'"
+                                        continue
+
+                                elif [ "$answer" = "y" ] || [ "$answer" = "Y" ] ; then
+                                        sudo userdel "$del_user"
+                                        sleep 2
+                                        echo "Se ha eliminado con éxito el usuario '$del_user'"
+                                        sleep 1
+                                else
+                                        sleep 1
+                                        echo "Opción no válida, intenta nuevamente."
+                                        sleep 1
+                                        continue
+                                fi
+                        else
+                                sleep 2
+                                echo "El usuario '$del_user' no existe."
                         fi
                         ;;
 
